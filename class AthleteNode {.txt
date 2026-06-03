@@ -1,0 +1,135 @@
+class AthleteNode {
+    int athleteId;
+    String athleteName;
+    int height;
+    AthleteNode left, right;
+
+    AthleteNode(int id, String name) {
+        athleteId = id;
+        athleteName = name;
+        height = 1;
+    }
+}
+
+class AVLTree {
+
+    int height(AthleteNode node) {
+        return (node == null) ? 0 : node.height;
+    }
+
+    int getBalance(AthleteNode node) {
+        return (node == null) ? 0 : height(node.left) - height(node.right);
+    }
+
+    AthleteNode rightRotate(AthleteNode y) {
+        AthleteNode x = y.left;
+        AthleteNode T2 = x.right;
+
+        x.right = y;
+        y.left = T2;
+
+        y.height = Math.max(height(y.left), height(y.right)) + 1;
+        x.height = Math.max(height(x.left), height(x.right)) + 1;
+
+        return x;
+    }
+
+    AthleteNode leftRotate(AthleteNode x) {
+        AthleteNode y = x.right;
+        AthleteNode T2 = y.left;
+
+        y.left = x;
+        x.right = T2;
+
+        x.height = Math.max(height(x.left), height(x.right)) + 1;
+        y.height = Math.max(height(y.left), height(y.right)) + 1;
+
+        return y;
+    }
+
+    AthleteNode insert(AthleteNode node, int id, String name) {
+
+        if (node == null)
+            return new AthleteNode(id, name);
+
+        if (id < node.athleteId)
+            node.left = insert(node.left, id, name);
+        else if (id > node.athleteId)
+            node.right = insert(node.right, id, name);
+        else
+            return node;
+
+        node.height = 1 + Math.max(height(node.left), height(node.right));
+
+        int balance = getBalance(node);
+
+        // LL Rotation
+        if (balance > 1 && id < node.left.athleteId)
+            return rightRotate(node);
+
+        // RR Rotation
+        if (balance < -1 && id > node.right.athleteId)
+            return leftRotate(node);
+
+        // LR Rotation
+        if (balance > 1 && id > node.left.athleteId) {
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
+        }
+
+        // RL Rotation
+        if (balance < -1 && id < node.right.athleteId) {
+            node.right = rightRotate(node.right);
+            return leftRotate(node);
+        }
+
+        return node;
+    }
+
+    AthleteNode search(AthleteNode root, int id) {
+
+        if (root == null || root.athleteId == id)
+            return root;
+
+        if (id < root.athleteId)
+            return search(root.left, id);
+
+        return search(root.right, id);
+    }
+
+    void inorder(AthleteNode root) {
+        if (root != null) {
+            inorder(root.left);
+            System.out.println(root.athleteId + " - " + root.athleteName);
+            inorder(root.right);
+        }
+    }
+}
+
+public class SportsAnalyticsAVL {
+
+    public static void main(String[] args) {
+
+        AVLTree tree = new AVLTree();
+        AthleteNode root = null;
+
+        root = tree.insert(root, 101, "Virat Kohli");
+        root = tree.insert(root, 105, "Rohit Sharma");
+        root = tree.insert(root, 103, "Jasprit Bumrah");
+        root = tree.insert(root, 110, "Hardik Pandya");
+        root = tree.insert(root, 108, "KL Rahul");
+
+        System.out.println("Athlete Records:");
+        tree.inorder(root);
+
+        AthleteNode athlete = tree.search(root, 103);
+
+        if (athlete != null) {
+            System.out.println("\nAthlete Found:");
+            System.out.println("ID: " + athlete.athleteId);
+            System.out.println("Name: " + athlete.athleteName);
+        } else {
+            System.out.println("Athlete Not Found");
+        }
+    }
+}
