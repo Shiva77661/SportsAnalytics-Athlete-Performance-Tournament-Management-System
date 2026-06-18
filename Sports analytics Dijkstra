@@ -1,0 +1,26 @@
+import java.util.*;
+
+public class SportsAnalyticsDijkstra {
+
+    static final int V = 5;
+
+    int minDistance(int dist[], boolean visited[]) {
+
+        int min = Integer.MAX_VALUE;
+        int minIndex = -1;
+
+        for (int v = 0; v < V; v++) {
+            if (!visited[v] && dist[v] < min) {
+                min = dist[v];
+                minIndex = v;
+            }
+        }
+        return minIndex;
+    }
+
+    void dijkstra(int graph[][], int src) {
+
+        int dist[] = new int[V];
+        boolean visited[] = new boolean[V];
+
+        Arrays
