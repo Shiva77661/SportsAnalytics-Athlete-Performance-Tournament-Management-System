@@ -1,0 +1,31 @@
+public class SportsAnalyticsKnapsack {
+    static int knapsack(int budget, int cost[], int score[], int n) {
+        int dp[][] = new int[n + 1][budget + 1];
+        for (int i = 0; i <= n; i++) {
+            for (int w = 0; w <= budget; w++) {
+                if (i == 0 || w == 0)
+                    dp[i][w] = 0;
+                else if (cost[i - 1] <= w) {
+                    dp[i][w] = Math.max(
+                            score[i - 1] +
+                            dp[i - 1][w - cost[i - 1]],
+                            dp[i - 1][w]);
+                }
+                else {
+                    dp[i][w] = dp[i - 1][w];
+                }
+            }
+        }
+        return dp[n][budget];
+    }
+    public static void main(String[] args) {
+        int cost[] = {2, 3, 4, 5};
+        int score[] = {40, 50, 65, 75};
+        int budget = 7;
+        int n = cost.length;
+        int result = knapsack(
+                budget, cost, score, n);
+        System.out.println(
+            "Maximum Performance Score = " + result);
+    }
+}
